@@ -19,8 +19,13 @@ struct STEAMBRIDGE_API FUint64
 	operator uint64() { return Value; }
 	operator uint64() const { return Value; }
 
-	bool operator==(const FUint64 Other) const { return Value == Other; }
-	bool operator!=(const FUint64 Other) const { return Value != Other; }
+	bool operator==(const FUint64 Other) const { return Value == Other.Value; }
+	bool operator!=(const FUint64 Other) const { return Value != Other.Value; }
+
+	friend uint32 GetTypeHash(const FUint64& InValue)
+	{
+		return GetTypeHash(InValue.Value);
+	}
 
 	FUint64() = default;
 	FUint64(const uint64 value) : Value(value) {}
@@ -36,8 +41,13 @@ struct STEAMBRIDGE_API FUint32
 	operator uint32() { return Value; }
 	operator uint32() const { return Value; }
 
-	bool operator==(const FUint32 Other) const { return Value == Other; }
-	bool operator!=(const FUint32 Other) const { return Value != Other; }
+	bool operator==(const FUint32 Other) const { return Value == Other.Value; }
+	bool operator!=(const FUint32 Other) const { return Value != Other.Value; }
+
+	friend uint32 GetTypeHash(const FUint32& InValue)
+	{
+		return GetTypeHash(InValue.Value);
+	}
 
 	FUint32() = default;
 	FUint32(const uint32 value) : Value(value) {}
@@ -54,8 +64,13 @@ struct STEAMBRIDGE_API FInt32
 	operator int32() { return Value; }
 	operator int32() const { return Value; }
 
-	bool operator==(const FInt32 Other) const { return Value == Other; }
-	bool operator!=(const FInt32 Other) const { return Value != Other; }
+	bool operator==(const FInt32 Other) const { return Value == Other.Value; }
+	bool operator!=(const FInt32 Other) const { return Value != Other.Value; }
+
+	friend uint32 GetTypeHash(const FInt32& InValue)
+	{
+		return GetTypeHash(InValue.Value);
+	}
 
 	FInt32() = default;
 	FInt32(const int32 InValue) : Value(InValue) {}
@@ -71,8 +86,13 @@ struct STEAMBRIDGE_API FInt16
 	operator int16() { return Value; }
 	operator int16() const { return Value; }
 
-	bool operator==(const FInt16 Other) const { return Value == Other; }
-	bool operator!=(const FInt16 Other) const { return Value != Other; }
+	bool operator==(const FInt16 Other) const { return Value == Other.Value; }
+	bool operator!=(const FInt16 Other) const { return Value != Other.Value; }
+
+	friend uint32 GetTypeHash(const FInt16& InValue)
+	{
+		return GetTypeHash(InValue.Value);
+	}
 
 	FInt16() = default;
 	FInt16(const int16 InValue) : Value(InValue) {}

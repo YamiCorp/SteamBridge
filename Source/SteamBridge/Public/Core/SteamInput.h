@@ -192,7 +192,7 @@ public:
 	 * @return FString
 	 */
 	UFUNCTION(BlueprintPure, Category = "SteamBridgeCore|Input")
-	FString GetGlyphForActionOrigin(const ESteamInputActionOrigin Origin) const { return UTF8_TO_TCHAR(SteamInput()->GetGlyphForActionOrigin((EInputActionOrigin)Origin)); }
+	FString GetGlyphForActionOrigin(const ESteamInputActionOrigin Origin) const { return UTF8_TO_TCHAR(SteamInput()->GetGlyphForActionOrigin_Legacy((EInputActionOrigin)Origin)); }
 
 	/**
 	 * Returns the input type (device model) for the specified controller. This tells you if a given controller is a Steam controller, XBox 360 controller, PS4 controller, etc.
@@ -224,10 +224,12 @@ public:
 	/**
 	 * Must be called when starting use of the ISteamInput interface.
 	 *
+	 * @param bExplicitlyCallRunFrame - If True, you must call RunFrame
+	 *
 	 * @return bool - Always returns true.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "SteamBridgeCore|Input")
-	bool Init() { return SteamInput()->Init(); }
+	bool Init(const bool bExplicitlyCallRunFrame = false) { return SteamInput()->Init(bExplicitlyCallRunFrame); }
 
 	/**
 	 * Synchronize API state with the latest Steam Controller inputs available. This is performed automatically by SteamAPI_RunCallbacks, but for the absolute lowest possible latency, you can call this -
@@ -307,7 +309,7 @@ public:
 	 * @return void
 	 */
 	UFUNCTION(BlueprintCallable, Category = "SteamBridgeCore|Input")
-	void TriggerHapticPulse(const FInputHandle InputHandle, const ESteamControllerPad_ TargetPad, const int32 DurationMicroSec) { SteamInput()->TriggerHapticPulse(InputHandle, (ESteamControllerPad)TargetPad, DurationMicroSec); }
+	void TriggerHapticPulse(const FInputHandle InputHandle, const ESteamControllerPad_ TargetPad, const int32 DurationMicroSec) { SteamInput()->Legacy_TriggerHapticPulse(InputHandle, (ESteamControllerPad)TargetPad, DurationMicroSec); }
 
 	/**
 	 * Triggers a repeated haptic pulse on supported controllers.
@@ -324,7 +326,7 @@ public:
 	 * @return void
 	 */
 	UFUNCTION(BlueprintCallable, Category = "SteamBridgeCore|Input")
-	void TriggerRepeatedHapticPulse(const FInputHandle InputHandle, const ESteamControllerPad_ TargetPad, const int32 DurationMicroSec, const int32 OffMicroSec, const int32 Repeat) { SteamInput()->TriggerRepeatedHapticPulse(InputHandle, (ESteamControllerPad)TargetPad, DurationMicroSec, OffMicroSec, Repeat, 0); }
+	void TriggerRepeatedHapticPulse(const FInputHandle InputHandle, const ESteamControllerPad_ TargetPad, const int32 DurationMicroSec, const int32 OffMicroSec, const int32 Repeat) { SteamInput()->Legacy_TriggerRepeatedHapticPulse(InputHandle, (ESteamControllerPad)TargetPad, DurationMicroSec, OffMicroSec, Repeat, 0); }
 
 	/**
 	 * Trigger a vibration event on supported controllers.
