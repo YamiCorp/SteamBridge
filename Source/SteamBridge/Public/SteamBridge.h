@@ -21,10 +21,5 @@ public:
 	virtual bool Tick(float DeltaTime) override;
 
 private:
-
-	bool HandleSettingsSaved();
-	void RegisterSettings();
-	void UnregisterSettings();
-
-	void* SteamLibSDKHandle;
+	void* SteamLibSDKHandle = nullptr;
 };
