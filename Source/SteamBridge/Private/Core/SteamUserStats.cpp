@@ -18,6 +18,22 @@ USteamUserStats::USteamUserStats()
 	OnUserStatsReceivedCallback.Register(this, &USteamUserStats::OnUserStatsReceived);
 	OnUserStatsStoredCallback.Register(this, &USteamUserStats::OnUserStatsStored);
 	OnUserStatsUnloadedCallback.Register(this, &USteamUserStats::OnUserStatsUnloaded);
+
+	if (IsRunningDedicatedServer())
+	{
+		OnGlobalAchievementPercentagesReadyCallback.SetGameserverFlag();
+		OnGlobalStatsReceivedCallback.SetGameserverFlag();
+		OnLeaderboardFindResultCallback.SetGameserverFlag();
+		OnLeaderboardScoresDownloadedCallback.SetGameserverFlag();
+		OnLeaderboardScoreUploadedCallback.SetGameserverFlag();
+		OnLeaderboardUGCSetCallback.SetGameserverFlag();
+		OnNumberOfCurrentPlayersCallback.SetGameserverFlag();
+		OnUserAchievementIconFetchedCallback.SetGameserverFlag();
+		OnUserAchievementStoredCallback.SetGameserverFlag();
+		OnUserStatsReceivedCallback.SetGameserverFlag();
+		OnUserStatsStoredCallback.SetGameserverFlag();
+		OnUserStatsUnloadedCallback.SetGameserverFlag();
+	}
 }
 
 USteamUserStats::~USteamUserStats()
@@ -39,11 +55,6 @@ USteamUserStats::~USteamUserStats()
 FSteamAPICall USteamUserStats::DownloadLeaderboardEntries(const FSteamLeaderboard SteamLeaderboard, const ESteamLeaderboardDataRequest LeaderboardDataRequest, const int32 RangeStart, const int32 RangeEnd) const
 {
 	return SteamUserStats()->DownloadLeaderboardEntries(SteamLeaderboard, (ELeaderboardDataRequest)LeaderboardDataRequest, RangeStart, RangeEnd);
-}
-
-FSteamAPICall USteamUserStats::FindOrCreateLeaderboard(const FString& LeaderboardName, const ESteamLeaderboardSortMethod LeaderboardSortMethod, const ESteamLeaderboardDisplayType LeaderboardDisplayType) const
-{
-	return SteamUserStats()->FindOrCreateLeaderboard(TCHAR_TO_UTF8(*LeaderboardName), (ELeaderboardSortMethod)LeaderboardSortMethod, (ELeaderboardDisplayType)LeaderboardDisplayType);
 }
 
 bool USteamUserStats::GetAchievementAndUnlockTime(const FString& Name, bool& bAchieved, FDateTime& UnlockTime) const
@@ -108,60 +119,96 @@ FSteamAPICall USteamUserStats::UploadLeaderboardScore(const FSteamLeaderboard St
 
 void USteamUserStats::OnGlobalAchievementPercentagesReady(GlobalAchievementPercentagesReady_t* pParam)
 {
-	OnGlobalAchievementPercentagesReadyDelegate.Broadcast(pParam->m_nGameID, (ESteamResult)pParam->m_eResult);
+	AsyncTask(ENamedThreads::GameThread, [this, Param = *pParam]()
+	{
+		OnGlobalAchievementPercentagesReadyDelegate.Broadcast(Param.m_nGameID, static_cast<ESteamResult>(Param.m_eResult));
+	});
 }
 
 void USteamUserStats::OnGlobalStatsReceived(GlobalStatsReceived_t* pParam)
 {
-	OnGlobalStatsReceivedDelegate.Broadcast(pParam->m_nGameID, (ESteamResult)pParam->m_eResult);
+	AsyncTask(ENamedThreads::GameThread, [this, Param = *pParam]()
+	{
+		OnGlobalStatsReceivedDelegate.Broadcast(Param.m_nGameID, static_cast<ESteamResult>(Param.m_eResult));
+	});
 }
 
 void USteamUserStats::OnLeaderboardFindResult(LeaderboardFindResult_t* pParam)
 {
-	OnLeaderboardFindResultDelegate.Broadcast(pParam->m_hSteamLeaderboard, pParam->m_bLeaderboardFound == 1);
+	AsyncTask(ENamedThreads::GameThread, [this, Param = *pParam]()
+	{
+		OnLeaderboardFindResultDelegate.Broadcast(Param.m_hSteamLeaderboard, Param.m_bLeaderboardFound == 1);
+	});
 }
 
 void USteamUserStats::OnLeaderboardScoresDownloaded(LeaderboardScoresDownloaded_t* pParam)
 {
-	OnLeaderboardScoresDownloadedDelegate.Broadcast(pParam->m_hSteamLeaderboard, pParam->m_hSteamLeaderboardEntries, pParam->m_cEntryCount);
+	AsyncTask(ENamedThreads::GameThread, [this, Param = *pParam]()
+	{
+		OnLeaderboardScoresDownloadedDelegate.Broadcast(Param.m_hSteamLeaderboard, Param.m_hSteamLeaderboardEntries, Param.m_cEntryCount);
+	});
 }
 
-void USteamUserStats::OnLeaderboardScoreUploaded(LeaderboardScoreUploaded_t* pParam)
+void USteamUserStats::OnLeaderboardScoreUploaded(LeaderboardScoreUploaded_t* pParam) 
 {
-	OnLeaderboardScoreUploadedDelegate.Broadcast(pParam->m_bSuccess == 1, pParam->m_hSteamLeaderboard, pParam->m_nScore, pParam->m_bScoreChanged == 1, pParam->m_nGlobalRankNew, pParam->m_nGlobalRankPrevious);
+	AsyncTask(ENamedThreads::GameThread, [this, Param = *pParam]()
+	{
+		OnLeaderboardScoreUploadedDelegate.Broadcast(Param.m_bSuccess == 1, Param.m_hSteamLeaderboard, Param.m_nScore, Param.m_bScoreChanged == 1, Param.m_nGlobalRankNew, Param.m_nGlobalRankPrevious);
+	});
 }
 
 void USteamUserStats::OnLeaderboardUGCSet(LeaderboardUGCSet_t* pParam)
 {
-	OnLeaderboardUGCSetDelegate.Broadcast((ESteamResult)pParam->m_eResult, pParam->m_hSteamLeaderboard);
+	AsyncTask(ENamedThreads::GameThread, [this, Param = *pParam]()
+	{
+		OnLeaderboardUGCSetDelegate.Broadcast(static_cast<ESteamResult>(Param.m_eResult), Param.m_hSteamLeaderboard);
+	});
 }
 
 void USteamUserStats::OnNumberOfCurrentPlayers(NumberOfCurrentPlayers_t* pParam)
 {
-	OnNumberOfCurrentPlayersDelegate.Broadcast(pParam->m_bSuccess == 1, pParam->m_cPlayers);
+	AsyncTask(ENamedThreads::GameThread, [this, Param = *pParam]()
+	{
+		OnNumberOfCurrentPlayersDelegate.Broadcast(Param.m_bSuccess == 1, Param.m_cPlayers);
+	});
 }
 
 void USteamUserStats::OnUserAchievementIconFetched(UserAchievementIconFetched_t* pParam)
 {
-	OnUserAchievementIconFetchedDelegate.Broadcast(pParam->m_nGameID.ToUint64(), UTF8_TO_TCHAR(pParam->m_rgchAchievementName), pParam->m_bAchieved, pParam->m_nIconHandle);
+	AsyncTask(ENamedThreads::GameThread, [this, Param = *pParam]()
+	{
+		OnUserAchievementIconFetchedDelegate.Broadcast(Param.m_nGameID.ToUint64(), UTF8_TO_TCHAR(Param.m_rgchAchievementName), Param.m_bAchieved, Param.m_nIconHandle);
+	});
 }
 
 void USteamUserStats::OnUserAchievementStored(UserAchievementStored_t* pParam)
 {
-	OnUserAchievementStoredDelegate.Broadcast(pParam->m_nGameID, pParam->m_bGroupAchievement, UTF8_TO_TCHAR(pParam->m_rgchAchievementName), pParam->m_nCurProgress, pParam->m_nMaxProgress);
+	AsyncTask(ENamedThreads::GameThread, [this, Param = *pParam]()
+	{
+		OnUserAchievementStoredDelegate.Broadcast(Param.m_nGameID, Param.m_bGroupAchievement, UTF8_TO_TCHAR(Param.m_rgchAchievementName), Param.m_nCurProgress, Param.m_nMaxProgress);
+	});
 }
 
 void USteamUserStats::OnUserStatsReceived(UserStatsReceived_t* pParam)
 {
-	OnUserStatsReceivedDelegate.Broadcast(pParam->m_nGameID, (ESteamResult)pParam->m_eResult, pParam->m_steamIDUser.ConvertToUint64());
+	AsyncTask(ENamedThreads::GameThread, [this, Param = *pParam]()
+	{
+		OnUserStatsReceivedDelegate.Broadcast(Param.m_nGameID, static_cast<ESteamResult>(Param.m_eResult), Param.m_steamIDUser.ConvertToUint64());
+	});
 }
 
 void USteamUserStats::OnUserStatsStored(UserStatsStored_t* pParam)
 {
-	OnUserStatsStoredDelegate.Broadcast(pParam->m_nGameID, (ESteamResult)pParam->m_eResult);
+	AsyncTask(ENamedThreads::GameThread, [this, Param = *pParam]()
+	{
+		OnUserStatsStoredDelegate.Broadcast(Param.m_nGameID, static_cast<ESteamResult>(Param.m_eResult));
+	});
 }
 
 void USteamUserStats::OnUserStatsUnloaded(UserStatsUnloaded_t* pParam)
 {
-	OnUserStatsUnloadedDelegate.Broadcast(pParam->m_steamIDUser.ConvertToUint64());
+	AsyncTask(ENamedThreads::GameThread, [this, Param = *pParam]()
+	{
+		OnUserStatsUnloadedDelegate.Broadcast(Param.m_steamIDUser.ConvertToUint64());
+	});
 }

@@ -86,31 +86,6 @@ public:
 	// #TODO: DownloadLeaderboardEntriesForUsers
 
 	/**
-	 * Gets a leaderboard by name.
-	 * You must call either this or FindOrCreateLeaderboard to obtain the leaderboard handle which is valid for the game session for each leaderboard you wish to access prior to calling any other Leaderboard functions.
-	 *
-	 * @param const FString & LeaderboardName - The name of the leaderboard to find. Must not be longer than k_cchLeaderboardNameMax.
-	 * @return FSteamAPICall - SteamAPICall_t to be used with a LeaderboardFindResult_t call result.
-	 */
-	UFUNCTION(BlueprintCallable, BlueprintPure = false, Category = "SteamBridgeCore|UserStats")
-	FSteamAPICall FindLeaderboard(const FString& LeaderboardName) const { return SteamUserStats()->FindLeaderboard(TCHAR_TO_UTF8(*LeaderboardName)); }
-
-	/**
-	 * Gets a leaderboard by name, it will create it if it's not yet created.
-	 * You must call either this or FindLeaderboard to obtain the leaderboard handle which is valid for the game session for each leaderboard you wish to access prior to calling any other Leaderboard functions.
-	 * Leaderboards created with this function will not automatically show up in the Steam Community. You must manually set the Community Name field in the App Admin panel of the Steamworks website. As such it's generally
-	 * recommended to prefer creating the leaderboards in the App Admin panel on the Steamworks website and using FindLeaderboard unless you're expected to have a large amount of dynamically created leaderboards.
-	 * You should never pass k_ELeaderboardSortMethodNone for eLeaderboardSortMethod or k_ELeaderboardDisplayTypeNone for eLeaderboardDisplayType as this is undefined behavior.
-	 *
-	 * @param const FString & LeaderboardName - The name of the leaderboard to find or create. Must not be longer than k_cchLeaderboardNameMax.
-	 * @param ESteamLeaderboardSortMethod LeaderboardSortMethod - The sort order of the new leaderboard if it's created.
-	 * @param ESteamLeaderboardDisplayType LeaderboardDisplayType - The display type (used by the Steam Community web site) of the new leaderboard if it's created.
-	 * @return FSteamAPICall - SteamAPICall_t to be used with a LeaderboardFindResult_t call result.
-	 */
-	UFUNCTION(BlueprintCallable, BlueprintPure = false, Category = "SteamBridgeCore|UserStats")
-	FSteamAPICall FindOrCreateLeaderboard(const FString& LeaderboardName, const ESteamLeaderboardSortMethod LeaderboardSortMethod, const ESteamLeaderboardDisplayType LeaderboardDisplayType) const;
-
-	/**
 	 * Gets the unlock status of the Achievement.
 	 * The equivalent function for other users is GetUserAchievement.
 	 *

@@ -6,6 +6,7 @@ public class SteamBridge : ModuleRules
 {
 	public SteamBridge(ReadOnlyTargetRules Target) : base(Target)
 	{
+		PublicDependencyModuleNames.AddRange(new string[] { "Engine" });
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 
 		PrivateDependencyModuleNames.AddRange(new string[]
