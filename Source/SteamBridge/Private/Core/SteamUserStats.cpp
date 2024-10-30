@@ -52,11 +52,6 @@ USteamUserStats::~USteamUserStats()
 	OnUserStatsUnloadedCallback.Unregister();
 }
 
-FSteamAPICall USteamUserStats::DownloadLeaderboardEntries(const FSteamLeaderboard SteamLeaderboard, const ESteamLeaderboardDataRequest LeaderboardDataRequest, const int32 RangeStart, const int32 RangeEnd) const
-{
-	return SteamUserStats()->DownloadLeaderboardEntries(SteamLeaderboard, (ELeaderboardDataRequest)LeaderboardDataRequest, RangeStart, RangeEnd);
-}
-
 bool USteamUserStats::GetAchievementAndUnlockTime(const FString& Name, bool& bAchieved, FDateTime& UnlockTime) const
 {
 	uint32 TmpTime;

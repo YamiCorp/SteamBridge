@@ -41,20 +41,6 @@ public:
 	static USteamUserStats* GetSteamUserStats() { return USteamUserStats::StaticClass()->GetDefaultObject<USteamUserStats>(); }
 
 	/**
-	 * Attaches a piece of user generated content the current user's entry on a leaderboard.
-	 * This content could be a replay of the user achieving the score or a ghost to race against. The attached handle will be available when the entry is retrieved and can be accessed by other users using
-	 * `1	`GetDownloadedLeaderboardEntry which contains LeaderboardEntry_t.m_hUGC. To create and download user generated content see the documentation for the Steam Workshop.
-	 * Once attached, the content will be available even if the underlying Cloud file is changed or deleted by the user.
-	 * You must call FindLeaderboard or FindOrCreateLeaderboard to get a SteamLeaderboard_t prior to calling this function.
-	 *
-	 * @param FSteamLeaderboard SteamLeaderboard - A leaderboard handle obtained from FindLeaderboard or FindOrCreateLeaderboard.
-	 * @param FUGCHandle UGC - Handle to a piece of user generated content that was shared using ISteamRemoteStorage::FileShare or ISteamUGC::CreateItem.
-	 * @return FSteamAPICall - SteamAPICall_t to be used with a LeaderboardUGCSet_t call result.
-	 */
-	UFUNCTION(BlueprintCallable, BlueprintPure = false, Category = "SteamBridgeCore|UserStats")
-	FSteamAPICall AttachLeaderboardUGC(const FSteamLeaderboard SteamLeaderboard, const FUGCHandle UGC) const { return SteamUserStats()->AttachLeaderboardUGC(SteamLeaderboard, UGC); }
-
-	/**
 	 * Resets the unlock status of an achievement.
 	 * This is primarily only ever used for testing.
 	 * You must have called RequestCurrentStats and it needs to return successfully via its callback prior to calling this!
@@ -67,23 +53,6 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintPure = false, Category = "SteamBridgeCore|UserStats")
 	bool ClearAchievement(const FString& Name) const { return SteamUserStats()->ClearAchievement(TCHAR_TO_UTF8(*Name)); }
-
-	/**
-	 * Fetches a series of leaderboard entries for a specified leaderboard.
-	 * You can ask for more entries than exist, then this will return as many as do exist.
-	 * If you want to download entries for an arbitrary set of users, such as all of the users on a server then you can use DownloadLeaderboardEntriesForUsers which takes an array of Steam IDs.
-	 * You must call FindLeaderboard or FindOrCreateLeaderboard to get a SteamLeaderboard_t prior to calling this function.
-	 *
-	 * @param FSteamLeaderboard SteamLeaderboard - A leaderboard handle obtained from FindLeaderboard or FindOrCreateLeaderboard.
-	 * @param ESteamLeaderboardDataRequest LeaderboardDataRequest - The type of data request to make.
-	 * @param int32 RangeStart - The index to start downloading entries relative to eLeaderboardDataRequest.
-	 * @param int32 RangeEnd - The last index to retrieve entries for relative to eLeaderboardDataRequest.
-	 * @return FSteamAPICall - SteamAPICall_t to be used with a LeaderboardScoresDownloaded_t call result.
-	 */
-	UFUNCTION(BlueprintCallable, BlueprintPure = false, Category = "SteamBridgeCore|UserStats")
-	FSteamAPICall DownloadLeaderboardEntries(const FSteamLeaderboard SteamLeaderboard, const ESteamLeaderboardDataRequest LeaderboardDataRequest, const int32 RangeStart, const int32 RangeEnd) const;
-
-	// #TODO: DownloadLeaderboardEntriesForUsers
 
 	/**
 	 * Gets the unlock status of the Achievement.
@@ -324,14 +293,6 @@ public:
 	 */
 	UFUNCTION(BlueprintPure, Category = "SteamBridgeCore|UserStats")
 	int32 GetNumAchievements() const { return SteamUserStats()->GetNumAchievements(); }
-
-	/**
-	 * Asynchronously retrieves the total number of players currently playing the current game. Both online and in offline mode.
-	 *
-	 * @return FSteamAPICall - SteamAPICall_t to be used with a NumberOfCurrentPlayers_t call result.
-	 */
-	UFUNCTION(BlueprintPure, Category = "SteamBridgeCore|UserStats")
-	FSteamAPICall GetNumberOfCurrentPlayers() const { return SteamUserStats()->GetNumberOfCurrentPlayers(); }
 
 	/**
 	 * Gets the current value of the a stat for the current user.

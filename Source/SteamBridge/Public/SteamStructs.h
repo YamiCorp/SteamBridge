@@ -109,6 +109,13 @@ struct STEAMBRIDGE_API FHServerListRequest
 	FHServerListRequest(void* InValue) : Value(InValue) {}
 };
 
+USTRUCT(BlueprintType)
+struct STEAMBRIDGE_API FSteamGameID : public FUint64
+{
+	GENERATED_BODY()
+	using FUint64::FUint64;
+};
+
 USTRUCT(BlueprintType, meta = (HasNativeMake = "SteamBridge.SteamBPUtils.MakeSteamID", HasNativeBreak = "SteamBridge.SteamBPUtils.BreakSteamID"))
 struct STEAMBRIDGE_API FSteamID : public FUint64
 {

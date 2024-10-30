@@ -10,6 +10,8 @@
 #pragma warning(disable:4265)
 #endif
 
+// 1.57 is supported in 5.5 (at least it's on the repo)
+
 #if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION >= 3
 #include <ThirdParty/Steamworks/Steamv153/sdk/public/steam/steam_api.h>
 #include <ThirdParty/Steamworks/Steamv153/sdk/public/steam/steam_gameserver.h>
