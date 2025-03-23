@@ -5,14 +5,17 @@
 
 #ifdef _MSC_VER
 #pragma warning(push)
-#pragma warning(disable:4996)
-#pragma warning(disable:4828)
-#pragma warning(disable:4265)
+#pragma warning(disable : 4996)
+#pragma warning(disable : 4828)
+#pragma warning(disable : 4265)
 #endif
 
 // 1.57 is supported in 5.5 (at least it's on the repo)
 
-#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION >= 3
+#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION == 5
+#include <ThirdParty/Steamworks/Steamv157/sdk/public/steam/steam_api.h>
+#include <ThirdParty/Steamworks/Steamv157/sdk/public/steam/steam_gameserver.h>
+#elif ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION == 3
 #include <ThirdParty/Steamworks/Steamv153/sdk/public/steam/steam_api.h>
 #include <ThirdParty/Steamworks/Steamv153/sdk/public/steam/steam_gameserver.h>
 #elif ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION == 0
@@ -31,11 +34,11 @@
 
 namespace SteamDefs
 {
-	static constexpr int32 Buffer128 = 128;
-	static constexpr int32 Buffer512 = 512;
-	static constexpr int32 Buffer1024 = 1024;
-	static constexpr int32 Buffer2048 = 2048;
-	static constexpr int32 Buffer4096 = 4096;
-	static constexpr int32 Buffer8192 = 8192;
-	static constexpr int32 Buffer16384 = 16384;
-};
+static constexpr int32 Buffer128 = 128;
+static constexpr int32 Buffer512 = 512;
+static constexpr int32 Buffer1024 = 1024;
+static constexpr int32 Buffer2048 = 2048;
+static constexpr int32 Buffer4096 = 4096;
+static constexpr int32 Buffer8192 = 8192;
+static constexpr int32 Buffer16384 = 16384;
+};  // namespace SteamDefs
